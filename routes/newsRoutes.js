@@ -1,120 +1,54 @@
 const express = require("express");
 const multer = require("multer");
-const News = require("../models/News");
+const {
+  getNews,
+  createNews,
+  updateNews,
+  deleteNews,
+  getNewsById
+} = require("../controllers/newsController");
+const { body, validationResult } = require("express-validator");
 
 const router = express.Router();
 
 // Configuração do multer para armazenar imagens na pasta 'uploads/'
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
+  destination: (req, file, cb) => cb(null, "uploads/"),
+  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname),
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-// Rota para listar notícias com paginação, ordenação e filtros
-router.get("/", async (req, res) => {
-  try {
-      const { page = 1, limit = 5, category, author } = req.query;
-      const filter = {};
+// Middleware para validação de entrada de dados
+const validateNews = [
+  body("title").notEmpty().withMessage("O título é obrigatório"),
+  body("category").notEmpty().withMessage("A categoria é obrigatória"),
+  body("author").notEmpty().withMessage("O autor é obrigatório"),
+  body("content").notEmpty().withMessage("O conteúdo é obrigatório"),
+];
 
-      // Adiciona filtro de categoria se passado na URL
-      if (category) filter.category = category;
-
-      // Adiciona filtro de autor se passado na URL
-      if (author) filter.author = author;
-
-      // Busca no MongoDB com filtros, ordenação e paginação
-      const news = await News.find(filter)
-          .sort({ date: -1 }) // Ordena mais recentes primeiro
-          .limit(parseInt(limit))
-          .skip((parseInt(page) - 1) * parseInt(limit))
-          .exec();
-
-      // Conta o total de notícias para calcular páginas
-      const count = await News.countDocuments(filter);
-
-      // Retorna os dados formatados para o frontend
-      res.json({
-          totalPages: Math.ceil(count / limit),
-          currentPage: parseInt(page),
-          totalNews: count,
-          data: news
-      });
-  } catch (err) {
-      res.status(500).json({ error: "Erro ao buscar notícias" });
+// Middleware para validar os erros
+const validateRequest = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-});
+  next();
+};
 
-// Criar uma nova notícia com tratamento de erros
-router.post("/news", upload.single("image"), async (req, res) => {
-  try {
-    const { title, category, author, content } = req.body;
-    const imageUrl = req.file.path; // URL da imagem no Cloudinary
+// 🔹 Rota para listar todas as notícias com paginação, ordenação e filtros
+router.get("/", getNews);
 
-    const news = new News({
-      title,
-      category,
-      author,
-      content,
-      image: imageUrl, // Agora salva a URL ao invés do arquivo local
-    });
+// 🔹 Rota para obter uma única notícia por ID
+router.get("/:id", getNewsById);
 
-    await news.save();
-    res.status(201).json(news);
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao criar notícia" });
-  }
-});
+// 🔹 Rota para criar uma nova notícia
+router.post("/news", upload.single("image"), validateNews, validateRequest, createNews);
 
+// 🔹 Rota para atualizar uma notícia pelo ID
+router.put("/news/:id", upload.single("image"), validateNews, validateRequest, updateNews);
 
-// Atualizar uma notícia com tratamento de erro
-router.put("/:id", upload.single("image"), async (req, res) => {
-  try {
-    const updatedData = { ...req.body };
-    if (req.file) updatedData.image = `/uploads/${req.file.filename}`;
-
-    const updatedNews = await News.findByIdAndUpdate(req.params.id, updatedData, { new: true });
-
-    if (!updatedNews) {
-      return res.status(404).json({ error: "Notícia não encontrada" });
-    }
-
-    res.json(updatedNews);
-  } catch (err) {
-    res.status(400).json({ error: "Erro ao atualizar notícia" });
-  }
-});
-
-
-// 🔹 ROTA: Deletar uma notícia pelo ID
-router.delete("/:id", async (req, res) => {
-  try {
-    await News.findByIdAndDelete(req.params.id);
-    res.json({ message: "Notícia removida com sucesso" });
-  } catch (err) {
-    res.status(400).json({ error: "Erro ao remover notícia" });
-  }
-});
-
-// Rota para criar uma notícia com upload de imagem
-router.post("/news", upload.single("image"), async (req, res) => {
-  try {
-    const { title, category, author, content } = req.body;
-    const image = req.file ? req.file.filename : null; // Se houver imagem, armazena o nome do arquivo
-
-    const newNews = new News({ title, category, author, content, image });
-    await newNews.save();
-
-    res.status(201).json({ message: "Notícia criada com sucesso!", news: newNews });
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao criar notícia" });
-  }
-});
-
+// 🔹 Rota para deletar uma notícia pelo ID
+router.delete("/news/:id", deleteNews);
 
 module.exports = router;
