@@ -12,20 +12,20 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // Rota para listar notícias com paginação, ordenação e filtros
-router.get("/news", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
       const { page = 1, limit = 5, category, author } = req.query;
       const filter = {};
 
-      // Adiciona filtro de categoria se o usuário passar na URL
+      // Adiciona filtro de categoria se passado na URL
       if (category) filter.category = category;
 
-      // Adiciona filtro de autor se o usuário passar na URL
+      // Adiciona filtro de autor se passado na URL
       if (author) filter.author = author;
 
       // Busca no MongoDB com filtros, ordenação e paginação
       const news = await News.find(filter)
-          .sort({ date: -1 }) // Ordena as mais recentes primeiro
+          .sort({ date: -1 }) // Ordena mais recentes primeiro
           .limit(parseInt(limit))
           .skip((parseInt(page) - 1) * parseInt(limit))
           .exec();
