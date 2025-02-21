@@ -51,22 +51,26 @@ router.get("/", async (req, res) => {
 });
 
 // Criar uma nova notícia com tratamento de erros
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/news", upload.single("image"), async (req, res) => {
   try {
-    const newNews = new News({
-      title: req.body.title,
-      category: req.body.category,
-      author: req.body.author,
-      image: req.file ? `/uploads/${req.file.filename}` : "",
-      content: req.body.content
+    const { title, category, author, content } = req.body;
+    const imageUrl = req.file.path; // URL da imagem no Cloudinary
+
+    const news = new News({
+      title,
+      category,
+      author,
+      content,
+      image: imageUrl, // Agora salva a URL ao invés do arquivo local
     });
 
-    await newNews.save();
-    res.status(201).json(newNews);
+    await news.save();
+    res.status(201).json(news);
   } catch (err) {
-    res.status(400).json({ error: err.message || "Erro ao salvar notícia" });
+    res.status(500).json({ error: "Erro ao criar notícia" });
   }
 });
+
 
 // Atualizar uma notícia com tratamento de erro
 router.put("/:id", upload.single("image"), async (req, res) => {

@@ -12,6 +12,29 @@ app.use(express.json());
 app.use(cors());
 app.use("/uploads", express.static("uploads")); // Servir imagens publicamente
 
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const multer = require("multer");
+
+// Configuração do Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
+
+// Configuração do armazenamento no Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "fiap-news", // Pasta onde as imagens serão armazenadas no Cloudinary
+    format: async (req, file) => "jpg", // Formato padrão
+    public_id: (req, file) => file.originalname, // Nome do arquivo
+  },
+});
+
+const upload = multer({ storage }); // Middleware de upload para ser usado nas rotas
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Conectado ao MongoDB"))
   .catch((err) => console.error("❌ Erro ao conectar:", err));
