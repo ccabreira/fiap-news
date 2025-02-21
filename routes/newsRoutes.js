@@ -11,27 +11,37 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// 🔹 ROTA: Listar todas as notícias com paginação
-router.get("/", async (req, res) => {
+// Rota para listar notícias com paginação, ordenação e filtros
+router.get("/news", async (req, res) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
-    page = parseInt(page);
-    limit = parseInt(limit);
+      const { page = 1, limit = 5, category, author } = req.query;
+      const filter = {};
 
-    const news = await News.find()
-      .skip((page - 1) * limit) // Pula os registros anteriores
-      .limit(limit); // Limita a quantidade de registros
+      // Adiciona filtro de categoria se o usuário passar na URL
+      if (category) filter.category = category;
 
-    const total = await News.countDocuments(); // Total de notícias no banco
+      // Adiciona filtro de autor se o usuário passar na URL
+      if (author) filter.author = author;
 
-    res.json({
-      total,
-      page,
-      pages: Math.ceil(total / limit),
-      data: news
-    });
+      // Busca no MongoDB com filtros, ordenação e paginação
+      const news = await News.find(filter)
+          .sort({ date: -1 }) // Ordena as mais recentes primeiro
+          .limit(parseInt(limit))
+          .skip((parseInt(page) - 1) * parseInt(limit))
+          .exec();
+
+      // Conta o total de notícias para calcular páginas
+      const count = await News.countDocuments(filter);
+
+      // Retorna os dados formatados para o frontend
+      res.json({
+          totalPages: Math.ceil(count / limit),
+          currentPage: parseInt(page),
+          totalNews: count,
+          data: news
+      });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao buscar notícias" });
+      res.status(500).json({ error: "Erro ao buscar notícias" });
   }
 });
 
