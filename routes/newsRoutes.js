@@ -4,12 +4,17 @@ const News = require("../models/News");
 
 const router = express.Router();
 
-// Configuração para upload de imagens
+// Configuração do multer para armazenar imagens na pasta 'uploads/'
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + "-" + file.originalname)
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
 });
-const upload = multer({ storage });
+
+const upload = multer({ storage: storage });
 
 // Rota para listar notícias com paginação, ordenação e filtros
 router.get("/", async (req, res) => {
@@ -91,5 +96,21 @@ router.delete("/:id", async (req, res) => {
     res.status(400).json({ error: "Erro ao remover notícia" });
   }
 });
+
+// Rota para criar uma notícia com upload de imagem
+router.post("/news", upload.single("image"), async (req, res) => {
+  try {
+    const { title, category, author, content } = req.body;
+    const image = req.file ? req.file.filename : null; // Se houver imagem, armazena o nome do arquivo
+
+    const newNews = new News({ title, category, author, content, image });
+    await newNews.save();
+
+    res.status(201).json({ message: "Notícia criada com sucesso!", news: newNews });
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao criar notícia" });
+  }
+});
+
 
 module.exports = router;
