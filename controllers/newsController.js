@@ -1,7 +1,7 @@
 const News = require("../models/News");
 
 // 🔹 Buscar todas as notícias com paginação, filtros e ordenação
-exports.getNews = async (req, res, next) => {
+const getNews = async (req, res, next) => {
   try {
     const { page = 1, limit = 5, category, author } = req.query;
     const filter = {};
@@ -23,15 +23,15 @@ exports.getNews = async (req, res, next) => {
       data: news,
     });
   } catch (err) {
-    next(err); // Enviar erro para o middleware
+    next(err);
   }
 };
 
 // 🔹 Criar uma nova notícia
-exports.createNews = async (req, res, next) => {
+const createNews = async (req, res, next) => {
   try {
     const { title, category, author, content } = req.body;
-    const imageUrl = req.file?.path;
+    const imageUrl = req.file?.path || null;
 
     const news = new News({ title, category, author, content, image: imageUrl });
     await news.save();
@@ -43,7 +43,7 @@ exports.createNews = async (req, res, next) => {
 };
 
 // 🔹 Atualizar uma notícia
-exports.updateNews = async (req, res, next) => {
+const updateNews = async (req, res, next) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
@@ -53,8 +53,7 @@ exports.updateNews = async (req, res, next) => {
     const news = await News.findByIdAndUpdate(id, updatedData, { new: true });
 
     if (!news) {
-      res.status(404);
-      throw new Error("Notícia não encontrada");
+      return res.status(404).json({ error: "Notícia não encontrada" });
     }
 
     res.json(news);
@@ -64,15 +63,14 @@ exports.updateNews = async (req, res, next) => {
 };
 
 // 🔹 Deletar uma notícia
-exports.deleteNews = async (req, res, next) => {
+const deleteNews = async (req, res, next) => {
   try {
     const { id } = req.params;
 
     const news = await News.findByIdAndDelete(id);
 
     if (!news) {
-      res.status(404);
-      throw new Error("Notícia não encontrada");
+      return res.status(404).json({ error: "Notícia não encontrada" });
     }
 
     res.json({ message: "Notícia removida com sucesso" });
@@ -80,3 +78,13 @@ exports.deleteNews = async (req, res, next) => {
     next(err);
   }
 };
+
+// 🔹 Exportação correta das funções
+module.exports = {
+  getNews,
+  createNews,
+  updateNews,
+  deleteNews,
+};
+
+
