@@ -1,119 +1,140 @@
-Fiap News API
+# 📰 Fiap News API  
 
-  
+## 📌 Sobre o projeto  
+A **Fiap News API** é uma API REST que permite **criação, edição, remoção e listagem de notícias**, além de **autenticação de usuários** com **JWT**.  
 
-📌 Sobre o projeto
+Ela usa **Node.js**, **Express.js** e **MongoDB**, suportando **upload de imagens** e garantindo **segurança com autenticação e rate limiting**.  
 
-A Fiap News API é uma API REST desenvolvida em Node.js com Express.js e MongoDB, permitindo a criação, consulta, atualização e remoção de notícias.
+---
 
-🚀 Tecnologias Utilizadas
+## 🚀 Tecnologias Utilizadas  
 
-Node.js - Ambiente de execução para JavaScript
+- **Node.js** - Ambiente de execução para JavaScript  
+- **Express.js** - Framework para criação de APIs  
+- **MongoDB** e **Mongoose** - Banco de dados NoSQL  
+- **JWT (JSON Web Token)** - Autenticação segura  
+- **Multer & Cloudinary** - Upload e armazenamento de imagens  
+- **CORS & Rate Limiting** - Segurança e proteção contra ataques  
 
-Express.js - Framework para criação de APIs
+---
 
-MongoDB - Banco de dados NoSQL
+## 🛠️ Como rodar o projeto  
 
-Mongoose - ODM para MongoDB
+### 1️⃣ **Pré-requisitos**  
+- **Node.js**, **MongoDB**, **Git**  
 
-Multer - Upload de arquivos
+### 2️⃣ **Clone o repositório**  
+```sh
+git clone https://github.com/seu-usuario/fiap-news.git
+cd fiap-news/backend
+```
 
-Dotenv - Gerenciamento de variáveis de ambiente
+### 3️⃣ **Instale as dependências**  
+```sh
+npm install
+```
 
-🛠️ Como rodar o projeto localmente
-
-1️⃣ Pré-requisitos
-
-Certifique-se de ter instalado:
-
-Node.js
-
-MongoDB
-
-Git
-
-2️⃣ Clone o repositório
-
- git clone https://github.com/seu-usuario/fiap-news.git
- cd fiap-news/backend
-
-3️⃣ Instale as dependências
-
- npm install
-
-4️⃣ Configure as variáveis de ambiente
-
-Crie um arquivo .env na raiz do projeto e adicione:
-
-MONGO_URI=mongodb://localhost:27017/fiapnews
+### 4️⃣ **Crie o arquivo `.env`** com as configurações:  
+```ini
 PORT=5000
+MONGO_URI=sua_string_do_mongodb
+JWT_SECRET=sua_chave_secreta
+CLOUD_NAME=sua_cloudinary_cloud_name
+CLOUD_API_KEY=sua_cloudinary_api_key
+CLOUD_API_SECRET=sua_cloudinary_api_secret
+```
 
-5️⃣ Inicie a aplicação
+### 5️⃣ **Inicie a API**  
+```sh
+npm start
+```
+A API rodará em `http://localhost:5000` 🚀  
 
- npm start
+---
 
-A API estará rodando em http://localhost:5000 🚀
+## 🔗 **Endpoints da API**  
 
-🔗 Endpoints da API
+### **Autenticação**  
 
-📌 Listar todas as notícias
+| Método | Rota               | Descrição |
+|--------|------------------|-----------|
+| `POST` | `/users/register` | Cria um usuário |
+| `POST` | `/users/login` | Faz login e retorna um token JWT |
 
-GET /news
+### **Notícias**  
 
-🔹 Resposta de exemplo:
+| Método | Rota          | Descrição |
+|--------|--------------|-----------|
+| `GET` | `/news`       | Lista todas as notícias |
+| `GET` | `/news/:id`   | Detalhes de uma notícia |
+| `POST` | `/news`      | Cria uma nova notícia (**autenticado**) |
+| `PUT` | `/news/:id`   | Atualiza uma notícia (**autenticado**) |
+| `DELETE` | `/news/:id` | Remove uma notícia (**autenticado**) |
 
-[
-  {
-    "_id": "65abc123456",
-    "title": "Nova Tecnologia Revoluciona o Mercado",
-    "category": "Tecnologia",
-    "author": "Cíntia",
-    "image": "/uploads/noticia1.jpg",
-    "content": "Descrição da notícia aqui...",
-    "date": "2025-02-21T00:26:52.735Z"
-  }
-]
+---
 
-📌 Criar uma nova notícia
+## 📌 Exemplos  
 
-POST /news
-
-🔹 Corpo da requisição (multipart/form-data):
-
+### **Criar uma notícia**  
+#### **POST** `/news`  
+🔹 **Corpo da requisição:**  
+```json
 {
-  "title": "Nova Descoberta Científica",
+  "title": "Nova Descoberta",
   "category": "Ciência",
   "author": "Cíntia",
-  "image": "(arquivo.jpg)",
   "content": "Detalhes sobre a descoberta..."
 }
+```
+🔹 **Resposta esperada:**  
+```json
+{
+  "message": "Notícia criada com sucesso",
+  "news": { "_id": "65abc123456", "title": "Nova Descoberta", "category": "Ciência" }
+}
+```
 
-📌 Atualizar uma notícia existente
+---
 
-PUT /news/:id
+### **Login**  
+#### **POST** `/users/login`  
+🔹 **Corpo da requisição:**  
+```json
+{
+  "email": "cintia@example.com",
+  "password": "123456"
+}
+```
+🔹 **Resposta esperada:**  
+```json
+{
+  "message": "Login bem-sucedido",
+  "token": "eyJhbGciOiJIUzI1..."
+}
+```
+⚠️ **Use o token JWT** para acessar rotas protegidas:  
+```
+Authorization: Bearer SEU_TOKEN_AQUI
+```
 
-🔹 Parâmetro: id (ID da notícia)
+---
 
-📌 Remover uma notícia
+## 📤 **Deploy**  
 
-DELETE /news/:id
+A API está no **Render**:  
+🔗 [https://fiap-news-api.onrender.com](https://fiap-news-api.onrender.com)  
 
-🔹 Parâmetro: id (ID da notícia)
+Para atualizar o deploy:  
+```sh
+git add .
+git commit -m "Atualizando API"
+git push origin main
+```
 
-📌 Como contribuir
+---
 
-Fork este repositório
+## 📄 Licença  
 
-Crie uma branch com a feature desejada (git checkout -b minha-feature)
+Este projeto está sob a **MIT License**.  
 
-Faça o commit das mudanças (git commit -m 'Adicionando minha feature')
-
-Envie para o repositório remoto (git push origin minha-feature)
-
-Abra um Pull Request 🎉
-
-📄 Licença
-
-Este projeto está licenciado sob a MIT License - veja o arquivo LICENSE para mais detalhes.
-
-💡 Dúvidas ou sugestões? Sinta-se à vontade para abrir uma issue ou entrar em contato!
+💡 **Dúvidas ou sugestões?** Abra uma **issue** ou entre em contato! 🚀  
