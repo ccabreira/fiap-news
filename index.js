@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
-const userRoutes = require("./routes/UserRoutes"); // Importando as rotas de usuário
+const userRoutes = require("./routes/userRoutes"); // Importando corretamente as rotas de usuário
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,4 +39,5 @@ app.use("/auth", userRoutes);
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
 
