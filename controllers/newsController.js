@@ -1,4 +1,5 @@
 const News = require("../models/News");
+const AppError = require("../utils/AppError");
 
 // 🔹 Buscar todas as notícias com paginação, filtros e ordenação
 const getNews = async (req, res, next) => {
@@ -27,11 +28,31 @@ const getNews = async (req, res, next) => {
   }
 };
 
+// 🔹 Buscar uma única notícia por ID
+const getNewsById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const news = await News.findById(id);
+
+    if (!news) {
+      return next(new AppError("Notícia não encontrada", 404));
+    }
+
+    res.json(news);
+  } catch (err) {
+    next(err);
+  }
+};
+
 // 🔹 Criar uma nova notícia
 const createNews = async (req, res, next) => {
   try {
     const { title, category, author, content } = req.body;
     const imageUrl = req.file?.path || null;
+
+    if (!title || !category || !author || !content) {
+      return next(new AppError("Todos os campos são obrigatórios", 400));
+    }
 
     const news = new News({ title, category, author, content, image: imageUrl });
     await news.save();
@@ -53,7 +74,7 @@ const updateNews = async (req, res, next) => {
     const news = await News.findByIdAndUpdate(id, updatedData, { new: true });
 
     if (!news) {
-      return res.status(404).json({ error: "Notícia não encontrada" });
+      return next(new AppError("Notícia não encontrada", 404));
     }
 
     res.json(news);
@@ -66,11 +87,10 @@ const updateNews = async (req, res, next) => {
 const deleteNews = async (req, res, next) => {
   try {
     const { id } = req.params;
-
     const news = await News.findByIdAndDelete(id);
 
     if (!news) {
-      return res.status(404).json({ error: "Notícia não encontrada" });
+      return next(new AppError("Notícia não encontrada", 404));
     }
 
     res.json({ message: "Notícia removida com sucesso" });
@@ -82,9 +102,9 @@ const deleteNews = async (req, res, next) => {
 // 🔹 Exportação correta das funções
 module.exports = {
   getNews,
+  getNewsById,
   createNews,
   updateNews,
   deleteNews,
 };
-
 

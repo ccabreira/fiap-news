@@ -1,10 +1,12 @@
 const express = require("express");
+const { createUser, loginUser } = require("../controllers/userController");
+
 const router = express.Router();
 
-// Exemplo de rota para listar usuários (pode ser ajustado depois)
-router.get("/", (req, res) => {
-    res.send("Lista de usuários");
-});
+// 🔹 Criar usuário
+router.post("/register", createUser);
+
+// 🔹 Login de usuário
+router.post("/login", loginUser);
 
 module.exports = router;
-

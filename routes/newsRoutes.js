@@ -1,10 +1,11 @@
 const express = require("express");
 const multer = require("multer");
-const { getNews, createNews, updateNews, deleteNews } = require("../controllers/newsController");
+const { getNews, getNewsById, createNews, updateNews, deleteNews } = require("../controllers/newsController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-// Configuração do multer para armazenar imagens na pasta 'uploads/'
+// Configuração do upload de imagens
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/");
@@ -16,35 +17,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// 🔹 Rota para listar notícias com paginação, filtros e ordenação
+// 🔹 Rota para listar todas as notícias (pública)
 router.get("/", getNews);
 
-// 🔹 Rota para criar uma nova notícia com validação
-const { body, validationResult } = require("express-validator");
+// 🔹 Rota para buscar uma notícia por ID (pública)
+router.get("/:id", getNewsById);
 
-router.post(
-  "/news",
-  upload.single("image"), // Middleware para upload de imagem
-  [
-    body("title").notEmpty().withMessage("O título é obrigatório"),
-    body("category").notEmpty().withMessage("A categoria é obrigatória"),
-    body("author").notEmpty().withMessage("O autor é obrigatório"),
-    body("content").notEmpty().withMessage("O conteúdo é obrigatório"),
-  ],
-  async (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    createNews(req, res, next);
-  }
-);
+// 🔹 Criar notícia (Protegida por autenticação)
+router.post("/", authMiddleware, upload.single("image"), createNews);
 
-// 🔹 Rota para atualizar uma notícia
-router.put("/news/:id", upload.single("image"), updateNews);
+// 🔹 Atualizar notícia (Protegida por autenticação)
+router.put("/:id", authMiddleware, upload.single("image"), updateNews);
 
-// 🔹 Rota para deletar uma notícia
-router.delete("/news/:id", deleteNews);
+// 🔹 Deletar notícia (Protegida por autenticação)
+router.delete("/:id", authMiddleware, deleteNews);
 
 module.exports = router;
 

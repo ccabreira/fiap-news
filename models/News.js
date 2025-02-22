@@ -5,11 +5,12 @@ const NewsSchema = new mongoose.Schema({
   category: { type: String, required: [true, "A categoria é obrigatória!"] },
   author: { type: String, required: [true, "O autor é obrigatório!"] },
   date: { type: Date, default: Date.now },
-  image: { type: String }, // Adicionando campo para a imagem
+  image: { type: String },
   content: { type: String, required: [true, "O conteúdo é obrigatório!"] }
 });
 
 module.exports = mongoose.model("News", NewsSchema);
+
 
 
 
