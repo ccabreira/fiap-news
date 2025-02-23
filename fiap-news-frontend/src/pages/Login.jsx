@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/auth/login";
+const API_URL = "https://fiap-news-api.onrender.com/login";
 
 function Login() {
   const [email, setEmail] = useState("");

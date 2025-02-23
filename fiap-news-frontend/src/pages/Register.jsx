@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/auth/register"; // Ajuste conforme necessário
+const API_URL = "https://fiap-news-api.onrender.com/register"; // Ajuste conforme necessário
 
 function Register() {
   const [name, setName] = useState("");

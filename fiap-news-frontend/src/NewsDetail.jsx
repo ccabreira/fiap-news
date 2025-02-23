@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/news"; // Ajuste para a sua API
+const API_URL = "https://fiap-news-api.onrender.com/news"; // Ajuste para a sua API
 
 function NewsDetail() {
   const { id } = useParams(); // Captura o ID da notícia na URL

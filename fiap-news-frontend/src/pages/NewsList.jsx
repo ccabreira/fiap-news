@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/news";
+const API_URL = "https://fiap-news-api.onrender.com/news";
 
 function NewsList() {
   const [news, setNews] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/news")
+    fetch("https://fiap-news-api.onrender.com/news")
       .then((response) => response.json())
       .then((data) => setNews(data.data)) // Certifique-se de acessar a chave correta
       .catch((error) => console.error("Erro ao buscar notícias:", error));

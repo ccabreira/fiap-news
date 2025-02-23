@@ -6,7 +6,7 @@ function NewsDetail() {
   const [news, setNews] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/news/${id}`)
+    fetch(`https://fiap-news-api.onrender.com/news/${id}`)
       .then((response) => response.json())
       .then((data) => setNews(data))
       .catch((error) => console.error("Erro ao buscar notícia:", error));
