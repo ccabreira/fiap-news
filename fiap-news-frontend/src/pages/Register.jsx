@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "https://fiap-news-api.onrender.com/register"; // Ajuste conforme necessário
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Register() {
   const [name, setName] = useState("");
@@ -12,19 +12,24 @@ function Register() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    const userData = { name, email, password }; // Definição correta do objeto
 
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
+    try {
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      navigate("/login"); // Redireciona para o login após sucesso
-    } else {
-      setError(data.message || "Erro ao cadastrar usuário");
+      if (response.ok) {
+        navigate("/login");
+      } else {
+        setError(data.message || "Erro ao cadastrar usuário");
+      }
+    } catch (error) {
+      setError("Erro na requisição. Tente novamente.");
     }
   };
 
@@ -39,7 +44,6 @@ function Register() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          style={{ display: "block", marginBottom: "10px", width: "100%" }}
         />
         <input
           type="email"
@@ -47,7 +51,6 @@ function Register() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          style={{ display: "block", marginBottom: "10px", width: "100%" }}
         />
         <input
           type="password"
@@ -55,15 +58,11 @@ function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          style={{ display: "block", marginBottom: "10px", width: "100%" }}
         />
-        <button type="submit" style={{ width: "100%", padding: "10px", background: "#555", border: "none", color: "white", cursor: "pointer" }}>
-          Cadastrar
-        </button>
+        <button type="submit">Cadastrar</button>
       </form>
     </div>
   );
 }
 
 export default Register;
-

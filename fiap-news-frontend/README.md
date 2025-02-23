@@ -1,8 +1,16 @@
-# React + Vite
+# FIAP News - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este projeto é um frontend React integrado a uma API para exibição e gerenciamento de notícias.
 
-Currently, two official plugins are available:
+## Tecnologias utilizadas:
+- React.js
+- Vite
+- React Router DOM
+- Consumo de API via Fetch
+- Autenticação com JWT
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Como rodar o projeto?
+1. Clone o repositório:
+   ```sh
+   git clone https://github.com/ccabreira/fiap-news.git
+

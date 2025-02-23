@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API_URL = "https://fiap-news-api.onrender.com/news";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function NewsList() {
   const [news, setNews] = useState([]);
 
   useEffect(() => {
-    fetch("https://fiap-news-api.onrender.com/news")
+    fetch(`${API_URL}/news`)
       .then((response) => response.json())
-      .then((data) => setNews(data.data)) // Certifique-se de acessar a chave correta
+      .then((data) => {
+        console.log("Dados recebidos da API:", data);
+        setNews(data.data);
+      })
       .catch((error) => console.error("Erro ao buscar notícias:", error));
   }, []);
 
@@ -19,11 +22,11 @@ function NewsList() {
       {news.length === 0 ? <p>Nenhuma notícia encontrada.</p> : null}
       {news.map((item) => (
         <div key={item._id} style={{ marginBottom: "20px" }}>
-          <Link to={`/news/${item._id}`} style={{ textDecoration: "none", color: "white" }}>
+          <Link to={`/news/${item._id}`}>
             <h2>{item.title}</h2>
           </Link>
           <p><strong>Categoria:</strong> {item.category}</p>
-          <p>{item.content.substring(0, 100)}...</p> {/* Exibe apenas um trecho */}
+          <p>{item.content.substring(0, 100)}...</p>
         </div>
       ))}
     </div>
@@ -31,5 +34,3 @@ function NewsList() {
 }
 
 export default NewsList;
-
-
