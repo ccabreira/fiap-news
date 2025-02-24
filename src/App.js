@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 
-function App() {
+function app() {
   return (
     <Router basename="/">
       <Navbar />
@@ -19,4 +19,4 @@ function App() {
   );
 }
 
-export default App;
+export default app;
