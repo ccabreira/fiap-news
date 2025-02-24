@@ -40,3 +40,30 @@
 .read-the-docs {
   color: #888;
 }
+
+.news-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.news-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.news-card h2 {
+  margin: 8px 0;
+}
+
+.news-card p {
+  color: #555;
+}
+
+.news-card span {
+  color: #888;
+  font-size: 0.9em;
+}

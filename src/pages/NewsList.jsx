@@ -1,36 +1,35 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+// src/pages/NewsList.jsx
+import React, { useState, useEffect } from 'react';
+import { getNews } from '../services/api';
+import NewsCard from '../components/NewsCard';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-function NewsList() {
+const NewsList = () => {
   const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/news`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Dados recebidos da API:", data);
-        setNews(data.data);
-      })
-      .catch((error) => console.error("Erro ao buscar notícias:", error));
+    const fetchNews = async () => {
+      const data = await getNews();
+      setNews(data);
+      setLoading(false);
+    };
+    fetchNews();
   }, []);
 
+  if (loading) {
+    return <p>Carregando notícias...</p>;
+  }
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Últimas Notícias</h1>
-      {news.length === 0 ? <p>Nenhuma notícia encontrada.</p> : null}
-      {news.map((item) => (
-        <div key={item._id} style={{ marginBottom: "20px" }}>
-          <Link to={`/news/${item._id}`}>
-            <h2>{item.title}</h2>
-          </Link>
-          <p><strong>Categoria:</strong> {item.category}</p>
-          <p>{item.content.substring(0, 100)}...</p>
-        </div>
-      ))}
+    <div>
+      <h1>Notícias</h1>
+      <div className="news-list">
+        {news.map((item) => (
+          <NewsCard key={item.id} {...item} />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default NewsList;
