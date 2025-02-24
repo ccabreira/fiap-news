@@ -1,36 +1,46 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+// src/pages/NewsList.jsx
+import React, { useState, useEffect } from 'react';
+import { getNews } from '../services/api';
+import NewsCard from '../components/NewsCard';
 
-const API_URL = import.meta.env.VITE_API_URL;
-
-function NewsList() {
+const NewsList = () => {
   const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // Estado para armazenar o erro
 
   useEffect(() => {
-    fetch(`${API_URL}/api/news`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Dados recebidos da API:", data);
-        setNews(data.data);
-      })
-      .catch((error) => console.error("Erro ao buscar notícias:", error));
+    const fetchNews = async () => {
+      try {
+        const data = await getNews(); // Busca as notícias
+        setNews(data); // Atualiza o estado com as notícias
+      } catch (error) {
+        setError('Erro ao carregar notícias. Tente novamente mais tarde.'); // Define a mensagem de erro
+        console.error('Erro ao buscar notícias:', error); // Log do erro no console
+      } finally {
+        setLoading(false); // Finaliza o estado de carregamento
+      }
+    };
+    fetchNews();
   }, []);
 
+  if (loading) {
+    return <p>Carregando notícias...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>; // Exibe a mensagem de erro
+  }
+
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Últimas Notícias</h1>
-      {news.length === 0 ? <p>Nenhuma notícia encontrada.</p> : null}
-      {news.map((item) => (
-        <div key={item._id} style={{ marginBottom: "20px" }}>
-          <Link to={`/news/${item._id}`}>
-            <h2>{item.title}</h2>
-          </Link>
-          <p><strong>Categoria:</strong> {item.category}</p>
-          <p>{item.content.substring(0, 100)}...</p>
-        </div>
-      ))}
+    <div>
+      <h1>Notícias</h1>
+      <div className="news-list">
+        {news.map((item) => (
+          <NewsCard key={item.id} {...item} />
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default NewsList;
