@@ -15,20 +15,20 @@ connectDB();
 const app = express();
 
 // Middlewares
-app.use(morgan("dev"));
-app.use(limiter);
-app.use(cors({ origin: process.env.ALLOWED_ORIGINS.split(",") }));
-app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use(morgan("dev")); // Log de requisições
+app.use(limiter); // Rate limiting para evitar abusos
+app.use(cors({ origin: process.env.ALLOWED_ORIGINS.split(",") })); // Configuração do CORS
+app.use(express.json()); // Parse de JSON no corpo das requisições
+app.use("/uploads", express.static("uploads")); // Servir arquivos estáticos da pasta uploads
 
 // Rotas
-app.use("/news", newsRoutes);
-app.use("/users", userRoutes);
+app.use("/api/news", newsRoutes); // Prefixo /api/news para as rotas de notícias
+app.use("/api/users", userRoutes); // Prefixo /api/users para as rotas de usuários
 
 // Rota principal
 app.get("/", (req, res) => res.send("🚀 API rodando!"));
 
-// Tratamento de erros
+// Tratamento de erros global
 app.use(errorHandler);
 
 // Iniciar servidor
