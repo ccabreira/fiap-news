@@ -99,7 +99,6 @@ const deleteNews = async (req, res, next) => {
   }
 };
 
-// 🔹 Exportação correta das funções
 module.exports = {
   getNews,
   getNewsById,
@@ -107,4 +106,3 @@ module.exports = {
   updateNews,
   deleteNews,
 };
-

@@ -6,13 +6,13 @@ const errorHandler = (err, req, res, next) => {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
       success: false,
-      message: err.message
+      message: err.message,
     });
   }
 
   res.status(500).json({
     success: false,
-    message: "Erro interno no servidor"
+    message: "Erro interno no servidor",
   });
 };
 
