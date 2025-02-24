@@ -5,7 +5,8 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 
-function app() {
+// O componente é definido com o nome "App" (inicial maiúscula)
+function App() {
   return (
     <Router basename="/">
       <Navbar />
@@ -19,4 +20,5 @@ function app() {
   );
 }
 
-export default app;
+// Exportação do componente "App"
+export default App;
