@@ -14,3 +14,15 @@ Este projeto é um frontend React integrado a uma API para exibição e gerencia
    ```sh
    git clone https://github.com/ccabreira/fiap-news.git
 
+2. Instale as dependências:
+cd fiap-news-frontend
+npm install
+
+3. Configure o ambiente:
+cp .env.example .env
+
+4. Rode o projeto
+npm run dev
+
+# API de Produção:
+A API utilizada no projeto está hospedada em Render.

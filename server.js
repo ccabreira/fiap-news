@@ -26,8 +26,23 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // 🔹 Configuração do CORS
-app.use(cors());
-app.use(express.json());
+const allowedOrigins = [
+  "http://localhost:3000", 
+  "https://fiap-news-frontend.onrender.com" 
+];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    // Permite requisições sem origem (ex.: Postman ou mobile)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("CORS não permitido para este domínio"), false);
+    }
+  }
+}));
+
 
 // 🔹 Servir arquivos de imagens da pasta uploads
 app.use("/uploads", express.static("uploads"));
