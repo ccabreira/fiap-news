@@ -1,10 +1,22 @@
-require("dotenv").config();
-const connectDB = require("./config/db");
-const app = require("./server");
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Navbar from "./components/Navbar";
 
-// Conectar ao banco de dados
-connectDB();
+// Componente "App" com "A" maiúsculo
+function App() {
+  return (
+    <Router basename="/">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </Router>
+  );
+}
 
-// Iniciar o servidor
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 API rodando na porta ${PORT}`));
+// Export do componente "App"
+export default App;

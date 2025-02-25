@@ -8,31 +8,31 @@ const userRoutes = require("./routes/userRoutes");
 const errorHandler = require("./middlewares/errorMiddleware");
 
 // Configurar o aplicativo Express
-const app = express();
+const App = express();
 
 // Middlewares
-app.use(morgan("dev")); // Log de requisições
-app.use(express.json()); // Parsear JSON no corpo das requisições
-app.use(cors()); // Habilitar CORS
+App.use(morgan("dev")); // Log de requisições
+App.use(express.json()); // Parsear JSON no corpo das requisições
+App.use(cors()); // Habilitar CORS
 
 // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
   max: 100, // Limite de 100 requisições por IP
 });
-app.use(limiter);
+App.use(limiter);
 
 // Rotas
-app.use("/api/news", newsRoutes);
-app.use("/api/users", userRoutes);
+App.use("/api/news", newsRoutes);
+App.use("/api/users", userRoutes);
 
 // Rota não encontrada (404)
-app.use((req, res, next) => {
+App.use((req, res, next) => {
   res.status(404).json({ message: "Rota não encontrada" });
 });
 
 // Middleware de tratamento de erros
-app.use(errorHandler);
+App.use(errorHandler);
 
 // Exportar o app para ser usado em outros arquivos
-module.exports = app;
+module.exports = App;
