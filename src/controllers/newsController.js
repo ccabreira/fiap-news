@@ -1,7 +1,7 @@
 const News = require("../models/News");
 const AppError = require("../utils/AppError");
 
-// 🔹 Buscar todas as notícias com paginação, filtros e ordenação
+// Buscar todas as notícias
 const getNews = async (req, res, next) => {
   try {
     const { page = 1, limit = 5, category, author } = req.query;
@@ -28,7 +28,7 @@ const getNews = async (req, res, next) => {
   }
 };
 
-// 🔹 Buscar uma única notícia por ID
+// Buscar uma notícia por ID
 const getNewsById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -44,7 +44,7 @@ const getNewsById = async (req, res, next) => {
   }
 };
 
-// 🔹 Criar uma nova notícia
+// Criar uma nova notícia
 const createNews = async (req, res, next) => {
   try {
     const { title, category, author, content } = req.body;
@@ -63,7 +63,7 @@ const createNews = async (req, res, next) => {
   }
 };
 
-// 🔹 Atualizar uma notícia
+// Atualizar uma notícia
 const updateNews = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -83,7 +83,7 @@ const updateNews = async (req, res, next) => {
   }
 };
 
-// 🔹 Deletar uma notícia
+// Deletar uma notícia
 const deleteNews = async (req, res, next) => {
   try {
     const { id } = req.params;
