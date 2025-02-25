@@ -1,18 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import NewsList from "./pages/NewsList";
-import NewsDetail from "./pages/NewsDetail";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
 
-// O componente é definido com o nome "App" (inicial maiúscula)
+// Componente "App" com "A" maiúsculo
 function App() {
   return (
     <Router basename="/">
       <Navbar />
       <Routes>
-        <Route path="/" element={<NewsList />} />
-        <Route path="/news/:id" element={<NewsDetail />} />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
@@ -20,5 +18,5 @@ function App() {
   );
 }
 
-// Exportação do componente "App"
+// Export do componente "App"
 export default App;
