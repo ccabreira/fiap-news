@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIAP News - Home</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>FIAP News</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="register.html">Registro</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="news-list">
+            <!-- Notícias serão carregadas dinamicamente aqui -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 FIAP News</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('https://fiap-news-frontend.onrender.com/api/news')
+                .then(response => response.json())
+                .then(data => {
+                    const newsList = document.querySelector('.news-list');
+                    data.forEach(news => {
+                        const article = document.createElement('article');
+                        article.innerHTML = `
+                            <img src="${news.image}" alt="${news.title}">
+                            <h2>${news.title}</h2>
+                            <p>${news.summary}</p>
+                            <a href="details.html?id=${news.id}">Leia mais</a>
+                        `;
+                        newsList.appendChild(article);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
